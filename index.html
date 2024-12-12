@@ -382,14 +382,19 @@ function onEachFeature2(feature, layer) {
 				if ((currentFeature.properties.zig != null) && (currentFeature.properties.zig != ""))
 					popupContent += '<b>Zone d\'intervention : </b>'+currentFeature.properties.zig+'<br>';
 					if ((currentFeature.properties.accessibilité != "Non"))
-					popupContent += '<b>Adresse : '+currentFeature.properties.adresse+' - '+currentFeature.properties.cp+' '+currentFeature.properties.ville+	'<br>'
-					else (popupContent +="");
+					
 				//if ((currentFeature.properties.adresse != null) && (currentFeature.properties.adresse != ""))
 				//	popupContent += '<b>Adresse : </b>'+currentFeature.properties.adresse+' '+currentFeature.properties.cp+' '+currentFeature.properties.ville+'<br>';
 
 				//if ((currentFeature.properties.txt_1 != null) && (currentFeature.properties.txt_1 != ""))
 				//	popupContent += '<b>Nombre de projets ESS accompagnés ou financé par an : </b>'+currentFeature.properties.txt_1+'<br>';
-
+				if ((currentFeature.properties.nom != null) && (currentFeature.properties.nom != ""))
+					popupContent += '<b>Adresse :  </b> ';
+				if ((currentFeature.properties.adresse != null) && (currentFeature.properties.adresse != ""))
+					popupContent += currentFeature.properties.adresse+' - ';
+				if ((currentFeature.properties.cp != null) && (currentFeature.properties.cp != ""))
+					popupContent += +currentFeature.properties.cp+' - '+currentFeature.properties.ville+	'<br>';
+			
 				if ((currentFeature.properties.etape_1 != null) && (currentFeature.properties.etape_1 != ""))
 					popupContent += '<b>Etape de maturité accompagnée :  </b><br> ';
 				if ((currentFeature.properties.etape_1 != null) && (currentFeature.properties.etape_1 != ""))
@@ -418,8 +423,16 @@ function onEachFeature2(feature, layer) {
 					popupContent +='<li>'+currentFeature.properties.acc_5+'</li>';
 				if ((currentFeature.properties.acc_6 != null) && (currentFeature.properties.acc_6 != ""))
 					popupContent +='<li>'+currentFeature.properties.acc_6+'</li>';
-				if ((currentFeature.properties.fin_0 != null) && (currentFeature.properties.fin_0 != ""))
-					popupContent += '<b>Etape de maturité financée : </b>'+currentFeature.properties.fin_0+'<br>';
+				if ((currentFeature.properties.etape_fin_1 != null) && (currentFeature.properties.etape_fin_1 != ""))
+					popupContent += '<b>Etape de maturité financée : </b>'+currentFeature.properties.etape_fin_1+'<br>';
+				if ((currentFeature.properties.etape_fin_1 != null) && (currentFeature.properties.etape_fin_1 != ""))
+					popupContent += '<li>'+currentFeature.properties.etape_fin_1+'</li>';
+				if ((currentFeature.properties.etape_fin_2 != null) && (currentFeature.properties.etape_fin_2 != ""))
+					popupContent += '<li>'+currentFeature.properties.etape_fin_2+'</li>';
+				if ((currentFeature.properties.etape_fin_3 != null) && (currentFeature.properties.etape_fin_3 != ""))
+					popupContent += '<li>'+currentFeature.properties.etape_fin_3+'</li>';
+				if ((currentFeature.properties.etape_fin_5 != null) && (currentFeature.properties.etape_fin_5 != ""))
+					popupContent += '<li>'+currentFeature.properties.etape_fin_5+'</li>';
 				if ((currentFeature.properties.fin_1 != null) && (currentFeature.properties.fin_1 != ""))
 					popupContent += '<b>Dispositifs ou programmes de financement : </b><br>';
 				if ((currentFeature.properties.fin_1 != null) && (currentFeature.properties.fin_1 != ""))
@@ -514,10 +527,10 @@ function onEachFeature2(feature, layer) {
 
 			// Ajout de toutes les catégories au menu de gauche
 			for (i in tabCategories){
-				selectCategories += '<li onclick="displayCategories(this)">&nbsp; Porte un dispositif dédié aux :</li><div>'
+				selectCategories += '<li style font-family:Arial; onclick="displayCategories(this)">&nbsp; Porte un dispositif dédié aux :</li><div>'
 
 				for (j in tabCategories[i]) {
-					selectCategories += '<li style="margin-left:8px; font-size:13px;"><label style="all:unset; cursor: pointer;"><input id="' + j + '" type="checkbox" checked="true" onclick="onDisplayCheckBoxChanged(\'' + j.replace("'","\\'") + '\', \'' + i + '\');"> &nbsp' + j + '</label></li>'
+					selectCategories += '<li style="margin-left:8px; font-size:13px;font-family:Arial;"><label style="all:unset; cursor: pointer;"><input id="' + j + '" type="checkbox" checked="true" onclick="onDisplayCheckBoxChanged(\'' + j.replace("'","\\'") + '\', \'' + i + '\');"> &nbsp' + j + '</label></li>'
 				}
 
 				selectCategories += '</div>'
@@ -529,10 +542,10 @@ function onEachFeature2(feature, layer) {
 
 		// Ajout de toutes les catégories au menu de gauche
 		for (i in tabCategories2){
-			selectCategories2 += '<li onclick="displayCategories(this)">&nbsp; Typologie de Projets :</li><div>'
+			selectCategories2 += '<li style : font-family:Arial;onclick="displayCategories(this)">&nbsp; Typologie d\'acteurs :</li><div>'
 
 			for (j in tabCategories2[i]) {
-		selectCategories2 += '<li style="margin-left:8px; font-size:13px;"> <img style="width:25px; height:25px;" src="image/'+categorieToPicto(j)+'.png">&nbsp' + j + '</li>'
+		selectCategories2 += '<li style="margin-left:8px; font-size:13px;font-family:Arial;"> <img style="width:25px; height:25px;" src="image/'+categorieToPicto(j)+'.png">&nbsp' + j + '</li>'
 	}
 
 	selectCategories2 += '</div>'
