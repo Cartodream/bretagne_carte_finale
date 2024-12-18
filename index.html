@@ -106,14 +106,14 @@
 		function displayRouteLayer(routeLayerId) {
 			var isChecked = document.getElementById(routeLayerId).checked;
 			if ((isChecked==true)&&(!map.hasLayer(routeLayers[routeLayerId]))){
-				routeLayers[routeLayerId].addTo(map);
+				routeLayers[routeLayerId];
 			} else {
 				if ((isChecked==false)&&(map.hasLayer(routeLayers[routeLayerId]))){
 					map.removeLayer(routeLayers[routeLayerId]);
 				}
 			}
 		}
-	
+		
 		function initialize() {
 		
 		/************************************************************************************************************************/
@@ -170,10 +170,11 @@
 			} 
 			var bat = L.geoJson(communes,{
 				style: communesStyle, 
+		
 				
 			}).addTo(map);
-			
-      
+			routeLayers["bat"]=bat;
+		
 			
 			
 			
@@ -212,7 +213,7 @@
 			var optionsAffichageDonnees = {
 				pointToLayer: function (feature, latlng) { // fonction qui permet de transformer l'entité récupérée dans le geoJson en marker sur la carte
 					if (((feature.properties.sous_cat) != null) && ((feature.properties.sous_cat) != ""))
-						return new L.Marker(latlng, {icon: definePicto(feature.properties.etape)});
+						return new L.Marker(latlng, {icon: definePicto(feature.properties.etape),title:feature.properties.nom});
 				}
 			}
 			
@@ -424,7 +425,7 @@ function onEachFeature2(feature, layer) {
 				if ((currentFeature.properties.acc_6 != null) && (currentFeature.properties.acc_6 != ""))
 					popupContent +='<li>'+currentFeature.properties.acc_6+'</li>';
 				if ((currentFeature.properties.etape_fin_1 != null) && (currentFeature.properties.etape_fin_1 != ""))
-					popupContent += '<b>Etape de maturité financée : </b>'+currentFeature.properties.etape_fin_1+'<br>';
+					popupContent += '<b>Etape de maturité financée : </b>';
 				if ((currentFeature.properties.etape_fin_1 != null) && (currentFeature.properties.etape_fin_1 != ""))
 					popupContent += '<li>'+currentFeature.properties.etape_fin_1+'</li>';
 				if ((currentFeature.properties.etape_fin_2 != null) && (currentFeature.properties.etape_fin_2 != ""))
@@ -484,6 +485,7 @@ function onEachFeature2(feature, layer) {
 				
 				if (typeof(poiLayers[currentFeature.properties.id].marker)!="undefined") {
 				poiLayers[currentFeature.properties.id].marker.bindPopup (popupContent, popupOptions);
+				
 				// ajoute un événement "popupopen" au marker qui va exécuter la fonction suivante une fois la popup ouverte
 				poiLayers[currentFeature.properties.id].marker.on("popupopen", function() {
 					// on lance le slider à l'ouverture de la popup
@@ -502,7 +504,7 @@ function onEachFeature2(feature, layer) {
 			}
 			
 			map.addLayer(markers); // on ajoute notre 'markerClusterGroup' à la carte 
-
+			
 //**********************LEGENDE***************************	
 
 			// Fonction qui retourne le code couleur correspondant à l'élément passé en paramètre de la forme CTPN, CMPN, AMAPN, AAPN, APAPN	
@@ -527,10 +529,10 @@ function onEachFeature2(feature, layer) {
 
 			// Ajout de toutes les catégories au menu de gauche
 			for (i in tabCategories){
-				selectCategories += '<li style font-family:Arial; onclick="displayCategories(this)">&nbsp; Porte un dispositif dédié aux :</li><div>'
+				selectCategories += '<li ; onclick="displayCategories(this)">&nbsp; Porte un dispositif dédié aux :</li><div>'
 
 				for (j in tabCategories[i]) {
-					selectCategories += '<li style="margin-left:8px; font-size:13px;font-family:Arial;"><label style="all:unset; cursor: pointer;"><input id="' + j + '" type="checkbox" checked="true" onclick="onDisplayCheckBoxChanged(\'' + j.replace("'","\\'") + '\', \'' + i + '\');"> &nbsp' + j + '</label></li>'
+					selectCategories += '<li style="margin-left:8px; font-size:13px;"><label style="all:unset; cursor: pointer;"><input id="' + j + '" type="checkbox" checked="true" onclick="onDisplayCheckBoxChanged(\'' + j.replace("'","\\'") + '\', \'' + i + '\');"> &nbsp' + j + '</label></li>'
 				}
 
 				selectCategories += '</div>'
@@ -542,17 +544,19 @@ function onEachFeature2(feature, layer) {
 
 		// Ajout de toutes les catégories au menu de gauche
 		for (i in tabCategories2){
-			selectCategories2 += '<li style : font-family:Arial;onclick="displayCategories(this)">&nbsp; Typologie d\'acteurs :</li><div>'
+			selectCategories2 += '<li onclick="displayCategories(this)">&nbsp; Typologie d\'acteurs :</li><div>'
 
 			for (j in tabCategories2[i]) {
-		selectCategories2 += '<li style="margin-left:8px; font-size:13px;font-family:Arial;"> <img style="width:25px; height:25px;" src="image/'+categorieToPicto(j)+'.png">&nbsp' + j + '</li>'
+		selectCategories2 += '<li style="margin-left:8px; font-size:13px;"> <img style="width:25px; height:25px;" src="image/'+categorieToPicto(j)+'.png">&nbsp' + j + '</li>'
 	}
 
 	selectCategories2 += '</div>'
 }
 
 $('#select-list2').html(selectCategories2)	
-
+var selectListElt = $('#select-list');	// on récupère dans une variable l'élément correspondant à l'identifiant 'select-list' (attribué au menu de gauche)
+	selectListElt.html(selectListElt.html() + '<li><span style="position:relative; width:25px; height:18px; display:inline-block; margin-left:2px;"><span style="position:absolute; display:inline-block; height:12.5px; width:100%; border-bottom: 2px solid #000000"></span></span> Délimitation des EPCI bretons</li>');
+		
 			function resize() { // fonction qui redéfinit la taille de la carte et de la barre de titre
 	        	$('#mymap').css("height", ($(window).height() - $('.tab-bar').height()));
 				$('.tab-bar .middle').css("left", $('.left-small').width());
@@ -641,17 +645,24 @@ $('#select-list2').html(selectCategories2)
 					<a class="left-off-canvas-toggle"><img id="toggleButton" class="hide-for-small-only" src="image2//btn_filtrer_categories.png"><img class="show-for-small-only" src="image2/btn_filtrer_categories_icon.png"></a>
 				</section>
 			</nav>
-			
+			<ol id="joyride_tour" style="z-index:90;" class="joyride-list" data-joyride>
+				<li data-id="left-panel" data-button="Fermer" data-options="tip_location:right; prev_button:false;">
+					<h6>Conseils</h6>
+					<p>Le menu gauche permet la sélection des différents élements. <br><br>Vous pouvez effectuer une recherche par acteur (ou par ville) en cliquant sur la loupe, et en tapant le nom recherché </p>
+					
+				</li>
+			</ol>
 			<div class="inner-wrap">
 				<!-- menu gauche -->
 				
 				<section id="left-panel" class="left-off-canvas-menu" style="background-color:rgba(89,79,84,0.8);">
 				<center><br><img src="image2/bdt.jpg" style="width:40%;"/></center><br>
 				<center><img src="image2//rb.jpg" style="width:30%;"/></center>
+				<ul class="off-canvas-list menu-checkbox" id="select-list2">
+				</ul>
 				  <ul class="off-canvas-list menu-checkbox" id="select-list">
 				  </ul>
-				  <ul class="off-canvas-list menu-checkbox" id="select-list2">
-				</ul>
+				
 				</section>
 				<section class="main-section">
 					<div id="mymap" style="width:100%;"></div>
@@ -661,7 +672,7 @@ $('#select-list2').html(selectCategories2)
 
 				</div>
 		</div>
-	
+		
 		
 		
 
@@ -690,6 +701,16 @@ $('#select-list2').html(selectCategories2)
 				}
 			  }
 			})
+
+			/*if(! $.cookie('gmf-joyride'))*/
+			$(document).foundation('joyride', 'start');
+
+			$(".joyride-close-tip").click(function() {
+			   onRideEnded();
+			});
+			$('.off-canvas-wrap').foundation('offcanvas', 'show', 'offcanvas-overlap');
+			$('#modal-help-accueil').foundation('reveal', 'open');
+
 
 			
 
